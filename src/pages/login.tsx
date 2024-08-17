@@ -3,7 +3,7 @@ import { AuthForm } from "../widgets/authForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useUser } from "../modules/application/user/useUser";
-import { useLogin } from "../modules/application/auth/useLogin";
+import { useLogin } from "../modules/application/mutations/auth/useLogin";
 
 const Login: React.FC = () => {
     const navigate = useNavigate();

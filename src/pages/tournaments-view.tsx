@@ -3,11 +3,7 @@ import { getAllPlayers } from "../modules/infrastructure/api/api"
 import { Box, Typography } from "@mui/material"
 
 const TournamentsView = () => {
-useEffect(() => {
-    getAllPlayers().then((response) => {
-        console.log(response.data);
-    })
-}, [])
+const {  }
     return (
         
         <Box>

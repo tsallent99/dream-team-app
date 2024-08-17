@@ -2,7 +2,7 @@ import { Container, Typography } from "@mui/material";
 import { AuthForm } from "../widgets/authForm";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useRegister } from "../modules/application/auth/useRegister";
+import { useRegister } from "../modules/application/mutations/auth/useRegister";
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
