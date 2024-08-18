@@ -1,8 +1,7 @@
-
-import TournamentsView from "../pages/tournaments-view";
 import { Navigate, useRoutes } from "react-router-dom";
 import Register from "../pages/register";
 import Login from "../pages/login";
+import HomePage from "../pages/home";
 
 export const routes = [
     {
@@ -18,7 +17,7 @@ export const routes = [
     {
         name: 'Home',
         path: '/home',
-        element: <TournamentsView />
+        element: <HomePage />
     },
     {
         path: "*",
