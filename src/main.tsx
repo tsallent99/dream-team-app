@@ -9,6 +9,8 @@ import { provideUserRepository } from './modules/dependency-injection/user/UserR
 import { userAdapter } from './modules/infrastructure/adapters/userAdapter.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/react-query.ts';
+import { provideTournamentRepository } from './modules/dependency-injection/tournament/TournamentRepositoryContext.ts';
+import { tournamentAdapter } from './modules/infrastructure/adapters/tournamentAdapter.ts';
 const theme = createTheme({
   palette: {
     primary: {
@@ -27,6 +29,7 @@ root.render(
    
    <ContextProvider providers={[
       provideUserRepository(userAdapter ),
+      provideTournamentRepository(tournamentAdapter)
    ]}> 
    <App />
     </ContextProvider>

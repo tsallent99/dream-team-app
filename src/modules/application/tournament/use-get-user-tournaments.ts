@@ -12,7 +12,7 @@ export const useGetUserTournaments = () => {
 
   useEffect(() => {
     const fetchTournaments = async () => {
-      if (user && user.tournaments && user.tournaments.length > 0) {
+      if (!isUserPending && user && user.tournaments && user.tournaments.length > 0) {
         try {
           const fetchedTournaments = await getUserTournaments(user.tournaments);
           setTournaments(fetchedTournaments);
@@ -24,7 +24,7 @@ export const useGetUserTournaments = () => {
     };
 
     fetchTournaments();
-  }, [user, getUserTournaments]);
+  }, [user, isUserPending, getUserTournaments]);
 
   return {
     tournaments,

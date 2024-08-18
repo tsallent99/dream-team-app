@@ -1,6 +1,6 @@
 import axios from "axios";
 import { convertToCamelCase } from "../../utils/convert-keys";
-export const API_URL = 'http://localhost:3000';
+
 export const APISPORTS_URL = 'https://v3.football.api-sports.io/';
 
 const API_KEY = '4ad557a127c711aad613e3f7e50478d0';

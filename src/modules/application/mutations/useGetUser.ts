@@ -1,23 +1,19 @@
 
-import { useMutation } from "@tanstack/react-query";
-import { MutationConfig } from "../../../lib/react-query";
-import { useAuthStore } from "../../infrastructure/store/authStore";
+import {  useQuery } from "@tanstack/react-query";
+import { ExtractFnReturnType, QueryConfig } from "../../../lib/react-query";
+
 import { useUserRepositoryAdapterFactory } from "../../dependency-injection/user/UserRepositoryContext";
-import { GetUserFnT } from "../../domain/repositories/userRepository";
+import {  UserRepository } from "../../domain/repositories/userRepository";
+type QueryFnType = UserRepository["getUser"]
 type UseGetUserOptions = {
-    config?: MutationConfig<GetUserFnT>;
+    config?: QueryConfig<QueryFnType>;
   };
 
-export const UseGetUser = ({ config = {} }: UseGetUserOptions = {}) => {
-  const { getUser  } = useUserRepositoryAdapterFactory()
-    const setUser = useAuthStore((state) => state.setUser);
-    return useMutation({
-
-      mutationKey: ["user"],
-      mutationFn: () => getUser(),
-      onSuccess: (data) => {
-        setUser(data)
-      },
+export const UseGetUser = ({ config = {} }: UseGetUserOptions ) => {
+  const { getUser } = useUserRepositoryAdapterFactory()
+    return useQuery<ExtractFnReturnType<QueryFnType>>({
+      queryKey: ["user"],
+      queryFn: () => getUser(),
       ...config,
     });
   };

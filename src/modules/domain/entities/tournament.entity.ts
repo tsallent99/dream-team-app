@@ -3,7 +3,9 @@ import { TeamEntity } from "./team.entity";
 export type TournamentEntity = {
     readonly id: string;
     readonly name: string;
-    readonly teams: TeamEntity[];
-    readonly status: string;
+    readonly teams: string[];
     readonly prizePool: number;
+    readonly logo: string;
+    readonly leagueName: string;
+    readonly startDate: string
 }

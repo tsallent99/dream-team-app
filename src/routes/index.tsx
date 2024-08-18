@@ -2,6 +2,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 import Register from "../pages/register";
 import Login from "../pages/login";
 import HomePage from "../pages/home";
+import ProtectedRoute from "./protectedRoute";
 
 export const routes = [
     {
@@ -17,11 +18,15 @@ export const routes = [
     {
         name: 'Home',
         path: '/home',
-        element: <HomePage />
+        element: (
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          )
     },
     {
         path: "*",
-        element: <Navigate to="/" />
+        element: <Navigate to="/home" />
     }
 
 ]
