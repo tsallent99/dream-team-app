@@ -1,5 +1,3 @@
-import { TeamEntity } from "./team.entity";
-
 export type TournamentEntity = {
     readonly id: string;
     readonly name: string;

@@ -8,7 +8,6 @@ export async function getAllPlayers(): Promise<any> {
 
 export function getLeagueById(id: number): Promise<LeagueDto> {
     return httpAxiosApiSports.get(`leagues?id=${id}`).then(({data}) =>{
-        console.log(data.response[0].league)
         return data.response[0].league
     } )
 }

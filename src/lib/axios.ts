@@ -8,28 +8,26 @@ export const httpAxios = axios.create({
   });
   httpAxios.interceptors.response.use(
     (response) => {
-      // Convertir las claves de las respuestas a camelCase
       response.data = convertToCamelCase(response.data);
       return response;
     },
     (error) => {
-      // Manejo de errores de respuesta
       return Promise.reject(error);
     }
   );
-  // httpAxios.interceptors.request.use(
-  //   (config) => {
+  httpAxios.interceptors.request.use(
+    (config) => {
       
-  //     if (!config.url?.includes('/register') && !config.url?.includes('/login')) {
-  //       const token = useAuthStore.getState().token;
-  //       if (token) {
-  //         config.headers.Authorization = `Bearer ${token}`;
-  //       }
-  //     }
+      if (!config.url?.includes('/register') && !config.url?.includes('/login')) {
+        const token = useAuthStore.getState().token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
   
-  //     return config;
-  //   },
-  //   (error) => {
-  //     return Promise.reject(error);
-  //   }
-  // );
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );

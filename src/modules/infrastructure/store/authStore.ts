@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { UserEntity } from '../../domain/entities/user.entity';
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../application/user/useUser';
 import { useQuery } from '@tanstack/react-query';
 
@@ -9,7 +8,7 @@ interface AuthState {
   setToken: (token: string | null) => void;
   user: UserEntity | null;
   setUser: (user: UserEntity | null) => void;
-  initializeAuth: () => void; // Función para inicializar el estado de autenticación
+  initializeAuth: () => void; 
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -25,11 +24,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
 
-  // Nueva función para inicializar el estado de autenticación
+  
   initializeAuth: () => {
-    console.log("initialize")
     const storedToken = localStorage.getItem('token');
-    console.log(storedToken)
     if (storedToken) {
       set({ token: storedToken });
     } else {
@@ -42,7 +39,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 export const useAuthInitialization = () => {
   const { token, setToken, setUser, initializeAuth } = useAuthStore();
   const { user } = useUser();
-  const navigate = useNavigate();
 
   useQuery({
     queryKey: ['initializeAuth'],
@@ -64,7 +60,6 @@ export const useAuthInitialization = () => {
         setUser(null);
       }
 
-      // Devuelve un valor para evitar el error
       return token || null;
     },
 

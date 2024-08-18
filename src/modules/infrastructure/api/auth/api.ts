@@ -1,6 +1,6 @@
 import { httpAxios } from "../../../../lib/axios";
 import { useAuthStore } from "../../store/authStore";
-const API_URL = "http://localhost:5170/api"; // Asegúrate de que esto coincida con la URL de tu backend
+const API_URL = "http://localhost:5170/api";
 
 export interface loginPayload {
   email: string;

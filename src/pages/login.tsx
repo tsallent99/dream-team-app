@@ -16,9 +16,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (loginSuccess) {
-      // Redirige a la ruta de origen si existe, de lo contrario, redirige a /home
       const from = location.state?.from?.pathname || '/home';
-      console.log(from)
       navigate(from);
     }
   }, [loginSuccess, navigate, location.state]);
