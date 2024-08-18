@@ -1,5 +1,6 @@
 import axios from "axios";
 import { convertToCamelCase } from "../utils/convert-keys";
+import { useAuthStore } from "../modules/infrastructure/store/authStore";
 export const API_URL = 'http://localhost:3000';
 
 export const httpAxios = axios.create({
@@ -13,6 +14,22 @@ export const httpAxios = axios.create({
     },
     (error) => {
       // Manejo de errores de respuesta
+      return Promise.reject(error);
+    }
+  );
+  httpAxios.interceptors.request.use(
+    (config) => {
+      
+      if (!config.url?.includes('/register') && !config.url?.includes('/login')) {
+        const token = useAuthStore.getState().token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
+  
+      return config;
+    },
+    (error) => {
       return Promise.reject(error);
     }
   );

@@ -8,15 +8,16 @@ type UseGetUserOptions = {
     config?: MutationConfig<GetUserFnT>;
   };
 
-export const UseGetUser = ({ config }: UseGetUserOptions = {}) => {
+export const UseGetUser = ({ config = {} }: UseGetUserOptions = {}) => {
   const { getUser  } = useUserRepositoryAdapterFactory()
     const setUser = useAuthStore((state) => state.setUser);
     return useMutation({
-      ...config,
+
       mutationKey: ["user"],
       mutationFn: () => getUser(),
       onSuccess: (data) => {
         setUser(data)
       },
+      ...config,
     });
   };
