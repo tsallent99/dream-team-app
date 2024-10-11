@@ -24,3 +24,8 @@ export function convertKeys(obj: object, convertFn: (key: string) => string): ob
 export function convertToCamelCase(obj: object): object {
     return convertKeys(obj, (key) => key.replace(/_([a-z])/g, (match) => match[1].toUpperCase()));  
   }
+export function convertToSnakeCase(obj: object): object {
+    return convertKeys(obj, (key) => 
+      key.replace(/([A-Z])/g, (match) => `_${match.toLowerCase()}`)
+    );
+  }
