@@ -1,9 +1,14 @@
-import { Alert, Box, CircularProgress, Container, Grid, Typography } from "@mui/material"
+import { Alert, Box, Button, CircularProgress, Container, Grid, Typography } from "@mui/material"
 import { useGetUserTournaments } from "../modules/application/tournament/use-get-user-tournaments"
 import TournamentCard from "../widgets/tournaments-view/tournamentCard"
+import { useNavigate } from "react-router-dom"
 
 const HomePage = () => {
+    const navigate = useNavigate()
     const { tournaments, isPending, isError } = useGetUserTournaments()
+    const createTournament = () => {
+        navigate('/create-tournament')
+    }
     return (
         <Container maxWidth="lg" sx={{ paddingY: 4 }}>
             <Box sx={{ marginBottom: 4 }}>
@@ -30,7 +35,7 @@ const HomePage = () => {
                         <Grid item xs={12} sm={6} md={4} key={tournament.id}>
                             <TournamentCard 
                                 name={tournament.name} 
-                                leagueName={tournament.leagueName} 
+                                leagueName={tournament.name} 
                                 logo={tournament.logo} 
                                 prizePool={tournament.prizePool} 
                                 startDate={tournament.startDate} 
@@ -42,6 +47,7 @@ const HomePage = () => {
                 !isPending && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', marginY: 4 }}>
                         <Typography variant="body1" color="text.secondary">No tournaments available.</Typography>
+                        <Button variant="contained" color="primary" sx={{ marginLeft: 2 }} onClick={createTournament}>Create Tournament</Button>
                     </Box>
                 )
             )}

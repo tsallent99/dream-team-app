@@ -1,16 +1,18 @@
+import { LeagueEntity } from "../../domain/entities/league.entity";
 import { TournamentEntity } from "../../domain/entities/tournament.entity";
 import { TournamentRepository } from "../../domain/repositories/tournament.repository";
-import { getLeagueById } from "../api/external-api/api";
+import { getLeagueById, getLeagues } from "../api/external-api/api";
 import { LeagueDto } from "../api/external-api/api.dto";
-import { getTournamentsByIds, TournamentDto } from "../api/tournaments/api";
+import { createTournament, getTournamentsByIds, TournamentDto } from "../api/tournaments/api";
 
 const createTournamentEntityFromDto = (league: LeagueDto, tournament: TournamentDto): TournamentEntity =>{
-    const { name: leagueName, logo } = league
-    const { Id, ...rest } = tournament
+    const { logo } = league
+    const { Id, code, name, ...rest } = tournament
     return {
-        leagueName,
+        name,
         logo,
         id: Id,
+        code,
         ...rest
     }
 }
@@ -27,7 +29,19 @@ const getUserTournaments = async (ids: string[]): Promise<TournamentEntity[]> =>
   
     return userTournaments;
   };
-  
+const createNewTournament = async ({name, associatedLeague, startDate, prizePool, initialBudget}: {name: string, associatedLeague: number, startDate: string, prizePool: number, initialBudget: number}): Promise<TournamentEntity> => {
+    const tournament = await createTournament({name, associatedLeague, startDate, prizePool, initialBudget});
+    const league = await getLeagueById(associatedLeague);
+    return createTournamentEntityFromDto(league, tournament);
+   
+}
+const getLeaguesOptions = async (): Promise<LeagueEntity[]> => {
+    const leagues = await getLeagues();
+    console.log(leagues)
+    return leagues as LeagueEntity[];
+}
 export const tournamentAdapter : TournamentRepository = {
-    getUserTournaments
+    getUserTournaments,
+    createNewTournament,
+    getLeaguesOptions
 }

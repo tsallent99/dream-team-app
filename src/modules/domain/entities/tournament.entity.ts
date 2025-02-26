@@ -4,6 +4,7 @@ export type TournamentEntity = {
     readonly teams: string[];
     readonly prizePool: number;
     readonly logo: string;
-    readonly leagueName: string;
-    readonly startDate: string
+    readonly associatedLeague: number;
+    readonly startDate: string;
+    readonly code: string
 }
