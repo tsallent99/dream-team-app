@@ -1,32 +1,25 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthGuard } from '../modules/application/guards/useAuthGuard';
-import { useAuthInitialization } from '../modules/infrastructure/store/authStore';
+// ProtectedRoute.tsx
+import React from "react";
+import { CircularProgress } from "@mui/material";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuthGuard } from "../modules/application/guards/useAuthGuard";
 
 interface ProtectedRouteProps {
-  children: React.ReactElement;
+	children: React.ReactElement;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    useAuthInitialization()
-  const { isPending, isAuthenticated, isInitialized } = useAuthGuard();
-  const location = useLocation();
+	const { user, isLoading, isError } = useAuthGuard();
+	const location = useLocation();
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
-  if (!isInitialized) {
-    return <div>Loading...</div>;
-  }
+	if (!user || isError) {
+		return <Navigate to="/login" state={{ from: location }} />;
+	}
 
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
-
-  if (!isAuthenticated && !isPending) {
-    return <Navigate to="/" state={{ from: location }} />;
-  }
-
-  return children;
+	return children;
 };
 
 export default ProtectedRoute;
-
-

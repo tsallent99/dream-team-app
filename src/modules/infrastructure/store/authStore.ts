@@ -1,70 +1,53 @@
-import { create } from 'zustand'
-import { UserEntity } from '../../domain/entities/user.entity';
-import { useUser } from '../../application/user/useUser';
-import { useQuery } from '@tanstack/react-query';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// authStore.ts
+import create from "zustand";
+import { useEffect } from "react";
+import { UseGetUser } from "../../application/user/queries/useGetUser";
 
 interface AuthState {
-  token: string | null;
-  setToken: (token: string | null) => void;
-  user: UserEntity | null;
-  setUser: (user: UserEntity | null) => void;
-  initializeAuth: () => void; 
+	user: any;
+	token: string | null;
+	error: any;
+	setUser: (user: any) => void;
+	setToken: (token: string | null) => void;
+	setError: (error: any) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: null,
-  setToken: (token) => {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-    set({ token });
-  },
-  user: null,
-  setUser: (user) => set({ user }),
-
-  
-  initializeAuth: () => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      set({ token: storedToken });
-    } else {
-      set({ token: null });
-    }
-  }
+	user: null,
+	token: null,
+	error: null,
+	setUser: (user) => set({ user }),
+	setToken: (token) => {
+		if (token) {
+			localStorage.setItem("token", token);
+		} else {
+			localStorage.removeItem("token");
+		}
+		set({ token });
+	},
+	setError: (error) => set({ error }),
 }));
 
+export const useInitializeAuth = () => {
+	const { setUser, setToken, setError, token } = useAuthStore();
+	const { data, isError, error } = UseGetUser({
+		config: {
+			enabled: !!token,
+		},
+	});
 
-export const useAuthInitialization = () => {
-  const { token, setToken, setUser, initializeAuth } = useAuthStore();
-  const { user } = useUser();
-
-  useQuery({
-    queryKey: ['initializeAuth'],
-    queryFn: async () => {
-      initializeAuth();
-
-      if (token) {
-        try {
-          if (!token || !user) {
-            setToken(null);
-            setUser(null);
-          }
-        } catch (error) {
-          console.error('Failed to fetch user:', error);
-          setToken(null);
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-
-      return token || null;
-    },
-
-  });
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			setToken(token);
+			if (isError) {
+				setUser(null);
+				setError(error);
+			} else if (data) {
+				setError(null);
+				setUser(data);
+			}
+		}
+	}, [data, isError, error, setToken, setUser, setError]);
 };
-
-
-

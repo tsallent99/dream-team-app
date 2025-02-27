@@ -1,26 +1,23 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../user/useUser';
-import { useAuthStore } from '../../infrastructure/store/authStore';
+// useAuthGuard.ts
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { queryClient } from "../../../lib/react-query";
+import { useAuth } from "../auth/useAuth";
+import { useInitializeAuth } from "../auth/useInitializeAuth";
 
 export const useAuthGuard = () => {
-  const navigate = useNavigate();
-  const { token } = useAuthStore();
-  const { user, isPending } = useUser();
-  const [isInitialized, setIsInitialized] = useState(false);
+	const navigate = useNavigate();
+	const { user, token, error, isError } = useAuth();
+	const isLoading = !user && !!token && !error;
 
-  useEffect(() => {
-    const initialize = async () => {
-      setIsInitialized(true);
-    };
+	useInitializeAuth();
+	useEffect(() => {
+		if (!isLoading && (!user || !token || isError)) {
+			navigate("/login");
+			localStorage.removeItem("token");
+			queryClient.clear();
+		}
+	}, [user, token, navigate, isError, error, isLoading]);
 
-    initialize();
-  }, [token, user, isPending, navigate]);
-
-  return {
-    isPending,
-    isAuthenticated: !!user && !isPending,
-    isInitialized
-  };
+	return { user, token, isLoading, isError, error };
 };
-

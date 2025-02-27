@@ -1,83 +1,141 @@
-import React, { useState } from 'react';
-import { TextField, Button, Slider, Typography, Select, MenuItem, FormControl } from '@mui/material';
+import { useForm, Controller } from "react-hook-form";
+import { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useCreateTournamentPage } from './useCreateTournamentPage';
-export const CreateTournamentFeaturePage = () => {
-  const [name, setName] = useState('');
-  const [startDate, setStartDate] = useState(dayjs());
-  const [prizePool, setPrizePool] = useState('');
-  const [league, setLeague] = useState('');
-  const [initialBudget, setInitialBudget] = useState(0);
-  const { isLoadingLeagues, leagues } = useCreateTournamentPage();
-  const handleDateChange = (date: Dayjs | null) => {
-    if (date) {
-      setStartDate(date);
-    }
-  }
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle form submission
-  };
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import {
+	FormControl,
+	TextField,
+	Button,
+	Select,
+	MenuItem,
+	Typography,
+	Slider,
+} from "@mui/material";
+import dayjs from "dayjs";
+import { useCreateTournamentPage } from "./useCreateTournamentPage";
 
-  return (
-    isLoadingLeagues ? <div>Loading...</div> :
-    leagues && leagues.length > 0 &&
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-<FormControl onSubmit={handleSubmit}>
-  <Select 
-  onChange={(e) => setLeague(e.target.value as string)}
-  label="Select a league"
-  labelId="league-select-label"
-  id="league"
-  value={league}
-  fullWidth
-  >
-  {leagues.map(league => (
-    <MenuItem key={league.id} value={league.id}>{league.name}</MenuItem>
-  ))}
-  </Select>
-      <TextField
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <DatePicker
-		label="Start Date"
-		value={startDate}
-		disablePast
-		onChange={handleDateChange}
-		slotProps={{ textField: { fullWidth: true, required: true } }}
-		/>
-      <TextField
-        label="Prize Pool"
-        type="number"
-        value={prizePool}
-        onChange={(e) => setPrizePool(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <Typography gutterBottom>Initial Budget (Millions €)</Typography>
-      <Slider
-        value={initialBudget}
-        onChange={(e, newValue) => setInitialBudget(newValue as number)}
-        aria-labelledby="initial-budget-slider"
-        step={1}
-        min={150}
-        max={400}
-        valueLabelDisplay="auto"
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Create Tournament
-      </Button>
-    </FormControl>
-    </LocalizationProvider>
-    
-  );
+interface TournamentFormData {
+	name: string;
+	startDate: Dayjs;
+	prizePool: string;
+	league: string;
+	initialBudget: number;
+}
+
+export const CreateTournamentFeaturePage = () => {
+	const { control, handleSubmit } = useForm<TournamentFormData>({
+		defaultValues: {
+			name: "",
+			startDate: dayjs(),
+			prizePool: "",
+			league: "",
+			initialBudget: 150,
+		},
+	});
+
+	const { isLoadingLeagues, leagues, createTournament, isCreatingTournament } =
+		useCreateTournamentPage();
+
+	const onSubmit = (data: TournamentFormData) => {
+		createTournament({
+			name: data.name,
+			associatedLeague: parseInt(data.league),
+			startDate: data.startDate.format("YYYY-MM-DD"),
+			prizePool: parseInt(data.prizePool),
+			initialBudget: data.initialBudget,
+		});
+	};
+
+	return isLoadingLeagues ? (
+		<div>Loading...</div>
+	) : leagues && leagues.length > 0 ? (
+		<LocalizationProvider dateAdapter={AdapterDayjs}>
+			<FormControl component="form" onSubmit={handleSubmit(onSubmit)}>
+				<Controller
+					name="league"
+					control={control}
+					render={({ field }) => (
+						<Select
+							{...field}
+							label="Select a league"
+							labelId="league-select-label"
+							id="league"
+							fullWidth
+						>
+							{leagues.map((league) => (
+								<MenuItem key={league.id} value={league.id}>
+									{league.name}
+								</MenuItem>
+							))}
+						</Select>
+					)}
+				/>
+
+				<Controller
+					name="name"
+					control={control}
+					render={({ field }) => (
+						<TextField {...field} label="Name" fullWidth margin="normal" />
+					)}
+				/>
+
+				<Controller
+					name="startDate"
+					control={control}
+					render={({ field }) => (
+						<DatePicker
+							{...field}
+							label="Start Date"
+							disablePast
+							slotProps={{ textField: { fullWidth: true, required: true } }}
+						/>
+					)}
+				/>
+
+				<Controller
+					name="prizePool"
+					control={control}
+					render={({ field }) => (
+						<TextField
+							{...field}
+							label="Prize Pool"
+							type="number"
+							fullWidth
+							margin="normal"
+						/>
+					)}
+				/>
+
+				<Typography gutterBottom>Initial Budget (Millions €)</Typography>
+				<Controller
+					name="initialBudget"
+					control={control}
+					render={({ field }) => (
+						<Slider
+							{...field}
+							aria-labelledby="initial-budget-slider"
+							step={1}
+							min={150}
+							max={400}
+							valueLabelDisplay="auto"
+						/>
+					)}
+				/>
+
+				<Button
+					type="submit"
+					variant="contained"
+					color="primary"
+					disabled={isCreatingTournament}
+				>
+					Create Tournament
+				</Button>
+			</FormControl>
+		</LocalizationProvider>
+	) : (
+		<div>No leagues found</div>
+	);
 };
 
 export default CreateTournamentFeaturePage;
