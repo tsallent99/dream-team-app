@@ -22,6 +22,17 @@ export class TeamEntity {
 		this._team = validation.data;
 	}
 
+	public getPlayers() {
+		return this._team.players;
+	}
+
+	public getPoints() {
+		return this._team.points;
+	}
+
+	public getBalance() {
+		return this._team.balance;
+	}
 	private _validate(validation: {
 		success: boolean;
 		data?: Team;

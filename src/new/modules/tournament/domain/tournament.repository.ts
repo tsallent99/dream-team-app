@@ -1,8 +1,17 @@
 import { TournamentEntity } from "./tournament.entity";
 
+export type CreateTournamentPayload = {
+	name: string;
+	prizePool: number;
+	startDate: string;
+	associatedLeague: number;
+};
 export interface TournamentRepository {
-	findById(id: string): Promise<TournamentEntity>;
-	create(tournament: TournamentEntity): Promise<TournamentEntity>;
-	update(tournament: TournamentEntity): Promise<TournamentEntity>;
-	delete(id: string): Promise<void>;
+	getUserTournaments(): Promise<TournamentEntity[]>;
+	create(params: CreateTournamentPayload): Promise<TournamentEntity>;
+	joinTournament(
+		tournamentId: string,
+		userId: string
+	): Promise<TournamentEntity>;
+	leaveTournament(tournamentId: string, teamId: string): Promise<void>;
 }

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { teamSchema } from "../../team/domain/team.entity";
 import { zodValidationHandler } from "../../../../shared/external-libs/zod/zod-validation-handler";
 import { playerSchema } from "../../../shared/domain/player.entity";
+
 const tournamentSchema = z.object({
 	id: z.string(),
 	name: z.string(),
@@ -9,9 +10,7 @@ const tournamentSchema = z.object({
 	startDate: z.string(),
 	logo: z.string(),
 	associatedLeague: z.number(),
-	code: z.string(),
 	teams: z.array(teamSchema),
-	players: z.array(playerSchema),
 });
 
 export type Tournament = z.infer<typeof tournamentSchema>;
@@ -26,11 +25,8 @@ export class TournamentEntity {
 		this._validate(validation);
 		this._tournament = validation.data;
 	}
-	public get teams() {
+	public getTeams() {
 		return this._tournament.teams;
-	}
-	public get players() {
-		return this._tournament.players;
 	}
 
 	private _validate(validation: {
